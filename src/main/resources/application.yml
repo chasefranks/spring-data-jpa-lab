@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost/jpa_lab
+    data-password: 
+    username: root
+    driver-class-name: com.mysql.jdbc.Driver
+  
+  jpa:
+    hibernate:
+      ddl-auto: create
