@@ -15,7 +15,7 @@ public class PetOwner {
 	private String lastName;
 	private String phoneNumber;
 	
-	private List<Pet> pets;
+//	private List<Pet> pets;
 	
 	public PetOwner() {
 
@@ -45,12 +45,12 @@ public class PetOwner {
 		this.phoneNumber = phoneNumber;
 	}
 
-	public List<Pet> getPets() {
-		return pets;
-	}
-
-	public void setPets(List<Pet> pets) {
-		this.pets = pets;
-	}
+//	public List<Pet> getPets() {
+//		return pets;
+//	}
+//
+//	public void setPets(List<Pet> pets) {
+//		this.pets = pets;
+//	}
 
 }

@@ -10,7 +10,7 @@ public class Pet {
 	private int id;
 	
 	private String name;
-	private PetOwner owner;
+//	private PetOwner owner;
 
 	public Pet() {
 
@@ -24,12 +24,12 @@ public class Pet {
 		this.name = name;
 	}
 
-	public PetOwner getOwner() {
-		return owner;
-	}
-
-	public void setOwner(PetOwner owner) {
-		this.owner = owner;
-	}
+//	public PetOwner getOwner() {
+//		return owner;
+//	}
+//
+//	public void setOwner(PetOwner owner) {
+//		this.owner = owner;
+//	}
 
 }
