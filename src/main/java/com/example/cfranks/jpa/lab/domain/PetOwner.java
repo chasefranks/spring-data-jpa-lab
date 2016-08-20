@@ -3,19 +3,24 @@ package com.example.cfranks.jpa.lab.domain;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 @Entity
 public class PetOwner {
 	
 	@Id
+	@GeneratedValue
 	private int id;
 	
 	private String firstName;
 	private String lastName;
 	private String phoneNumber;
 	
-//	private List<Pet> pets;
+	@OneToMany(mappedBy = "owner", fetch = FetchType.EAGER)
+	private List<Pet> pets;
 	
 	public PetOwner() {
 
@@ -45,12 +50,18 @@ public class PetOwner {
 		this.phoneNumber = phoneNumber;
 	}
 
-//	public List<Pet> getPets() {
-//		return pets;
-//	}
-//
-//	public void setPets(List<Pet> pets) {
-//		this.pets = pets;
-//	}
+	public List<Pet> getPets() {
+		return pets;
+	}
+
+	public void setPets(List<Pet> pets) {
+		this.pets = pets;
+	}
+
+	@Override
+	public String toString() {
+		return "PetOwner [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", phoneNumber="
+				+ phoneNumber + ", pets=" + pets + "]";
+	}
 
 }
