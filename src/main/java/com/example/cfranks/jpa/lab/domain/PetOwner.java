@@ -2,6 +2,7 @@ package com.example.cfranks.jpa.lab.domain;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -19,7 +20,7 @@ public class PetOwner {
 	private String lastName;
 	private String phoneNumber;
 	
-	@OneToMany(mappedBy = "owner", fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "owner", cascade=CascadeType.ALL)
 	private List<Pet> pets;
 	
 	public PetOwner() {

@@ -60,6 +60,10 @@ public class Pet {
 		return kennel;
 	}
 
+	/* 
+	 * notice how we have to be careful here when we display the owner
+	 * otherwise we would get a mess
+	 */
 	@Override
 	public String toString() {
 		return "Pet [id=" + id + ", name=" + name + ", owner=" + owner.getFirstName() + " " + owner.getLastName() + ", kennel=" + kennel + "]";

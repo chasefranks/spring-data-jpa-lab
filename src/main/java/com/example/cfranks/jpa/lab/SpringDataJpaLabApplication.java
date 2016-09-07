@@ -1,8 +1,10 @@
 package com.example.cfranks.jpa.lab;
 
 import static java.util.Arrays.asList;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
 
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -11,10 +13,12 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 
 import com.example.cfranks.jpa.lab.domain.Kennel;
 import com.example.cfranks.jpa.lab.domain.Pet;
 import com.example.cfranks.jpa.lab.domain.PetOwner;
+import com.example.cfranks.jpa.lab.repositories.CustomRepository;
 import com.example.cfranks.jpa.lab.repositories.KennelRepository;
 import com.example.cfranks.jpa.lab.repositories.PetOwnerRepository;
 import com.example.cfranks.jpa.lab.repositories.PetRepository;
@@ -29,7 +33,7 @@ public class SpringDataJpaLabApplication {
 	}
 	
 	@Bean
-	public CommandLineRunner save(PetRepository petRepo, PetOwnerRepository petOwnerRepo) {
+	public CommandLineRunner save(PetRepository petRepo, PetOwnerRepository petOwnerRepo, KennelRepository kennelRepo) {
 		return (args)->{
 			
 			logger.info("saving test data");
@@ -46,9 +50,11 @@ public class SpringDataJpaLabApplication {
 			lilly.setName("Lilly");
 			lilly.setOwner(owner);
 			
+			owner.setPets(asList(reese, lilly)); // we have to set both directions of the relationship
+			
 			petOwnerRepo.save(owner);
-			petRepo.save(reese);
-			petRepo.save(lilly);
+			
+			logger.info(owner.toString());
 			
 			PetOwner vivian = new PetOwner();
 			vivian.setFirstName("Vivian");
@@ -56,12 +62,25 @@ public class SpringDataJpaLabApplication {
 			vivian.setPhoneNumber("827-827-3655");	
 			
 			Pet tippy = new Pet("Tippy");
-			vivian.setPets(asList(tippy)); // note, this doesn't actually persist the relationship
+			tippy.setOwner(vivian);		
 			
-			tippy.setOwner(vivian); // we have to do this
+			vivian.setPets(asList(tippy));
 			
-			petOwnerRepo.save(vivian);			
-			petRepo.save(tippy);
+			petOwnerRepo.save(vivian);	
+			
+			logger.info(vivian.toString());
+			
+			// let's create a few kennels
+			Kennel tippyKennel = new Kennel("A", 1);
+			Kennel reesesKennel = new Kennel("A", 2);			
+
+			Pet tippyFromDB = petRepo.findByName("Tippy").get(0);
+			tippyKennel.setOccupant(tippyFromDB);
+
+			Pet reeseFromDB = petRepo.findByName("Reese").get(0);
+			reesesKennel.setOccupant(reeseFromDB);
+
+			kennelRepo.save(asList(tippyKennel, reesesKennel));
 			
 			logger.info("test data saved");
 			
@@ -70,36 +89,21 @@ public class SpringDataJpaLabApplication {
 	}
 	
 	@Bean
-	public CommandLineRunner fetch(PetRepository petRepo, PetOwnerRepository petOwnerRepo, KennelRepository kennelRepo) {
-		return (args)->{
-			logger.info("displaying all pet owners");
-			petOwnerRepo.findAll()
-				.forEach(
-						owner -> System.out.println(owner)
-				);
+	public CommandLineRunner customRepoTest(CustomRepository customRepo) {
+		return args -> {
+			List<Pet> petsFromDB = customRepo.fetchAllPets();
 			
-			logger.info("displaying all pets");
-			petRepo.findAll().forEach(pet->{
-				System.out.println(pet);
-			});
+			for(Pet p : petsFromDB) {
+				logger.info(p.toString());
+			}
 			
-			// let's create a few kennels
-			Kennel tippyKennel = new Kennel("A", 1);
-			Kennel reesesKennel = new Kennel("A", 2);			
-						
-			Pet tippy = petRepo.findByName("Tippy").get(0);
-			tippyKennel.setOccupant(tippy);
+			petsFromDB = customRepo.fetchPetsInAisle("A");
 			
-			Pet reese = petRepo.findByName("Reese").get(0);
-			reesesKennel.setOccupant(reese);
-			
-			kennelRepo.save(asList(tippyKennel, reesesKennel));
-			
-			logger.info("displaying all pets in their kennels");
-			petRepo.findAll().forEach(pet->{
-				System.out.println(pet);
-			});
-
-		};			
+			for(Pet p : petsFromDB) {
+				logger.info(p.toString());
+			}
+		};		
 	}
+	
+	
 }
